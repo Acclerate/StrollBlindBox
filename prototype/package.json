@@ -1,0 +1,22 @@
+{
+  "name": "walkbox-prototype",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "WalkBox（散步盲盒）匹配算法与围栏判定可运行原型 — TRD ② 交付物",
+  "engines": {
+    "node": ">=22.6"
+  },
+  "scripts": {
+    "demo": "node src/cli.ts",
+    "demo:db": "node src/cli.ts --db",
+    "demo:night": "node src/cli.ts --night",
+    "demo:ride": "node src/cli.ts --ride",
+    "demo:reroll": "node src/cli.ts --reroll",
+    "gen:seed": "node ../db/seed/gen_seed_pois.mjs",
+    "test": "node --test test/"
+  },
+  "optionalDependencies": {
+    "pg": "^8.13.0"
+  }
+}
