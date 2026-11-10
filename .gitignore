@@ -3,3 +3,12 @@ node_modules/
 *.log
 *.tmp
 .zcode/
+
+# Flutter / Gradle
+app/build/
+app/android/build/
+app/.dart_tool/
+app/.flutter-plugins*
+app/android/.gradle/
+app/android/local.properties
+server/data/

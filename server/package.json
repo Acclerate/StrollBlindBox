@@ -1,0 +1,12 @@
+{
+  "name": "walkbox-server",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "WalkBox App 后端 API（TRD 四. 接口子集, 复用 prototype 匹配/围栏逻辑）",
+  "scripts": {
+    "start": "node src/index.ts",
+    "start:db": "WALKBOX_DB=1 node src/index.ts",
+    "e2e": "node src/e2e.ts"
+  }
+}

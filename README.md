@@ -1,15 +1,23 @@
 # WalkBox（散步盲盒）· 技术交付实现
 
-基于《散步盲盒 App 技术实现需求说明书（TRD）V1.0》的三项后续交付物实现：
+基于《散步盲盒 App 技术实现需求说明书（TRD）V1.0》的交付实现：
 
 | # | 交付物 | 位置 | 状态 |
 |---|---|---|---|
 | ① | 数据库完整 DDL + 种子 POI 导入脚本设计 | [`db/`](db/) | ✅ 已在 PostGIS 16 实测 |
 | ② | 匹配算法与围栏判定的可运行原型 | [`prototype/`](prototype/) | ✅ 36 项单测全绿 + 闭环实跑 |
 | ③ | 客户端定位模块伪代码级详细设计 | [`docs/client-location-design.md`](docs/client-location-design.md) | ✅ |
+| ④ | **App（Flutter Android）+ 后端 API** | [`app/`](app/) · [`server/`](server/) | ✅ MVP 核心闭环 |
 
 ```
 ├── docker-compose.yml          # PostGIS 16 + PostGIS 3.4（127.0.0.1:54329）
+├── app/                        # ④ Flutter App（Android, 核心闭环）
+│   ├── lib/core/               #   geo/motion/fence — 原型 TS 逻辑的 Dart 移植(同基线单测)
+│   ├── lib/state/              #   WalkboxController — LocatorCore 编排(详设§3-§7落地)
+│   ├── lib/ui/                 #   首页开盒 / 箭头导航 / 抵达揭晓 / 图鉴
+│   └── test/core_test.dart     #   14 项 Dart 单测
+├── server/                     # ④ 后端 API（TRD 四. 接口子集, 复用 prototype 逻辑）
+│   └── src/index.ts            #   POST /v1/sessions · /arrive · /quit · /reroll · GET /v1/records
 ├── db/
 │   ├── schema/
 │   │   ├── 001_extensions.sql  # postgis + pgcrypto
@@ -61,6 +69,25 @@ npm run demo -- --ride  # 乘车段拦截: "这不像走路哦"，步数不计�
 npm run demo -- --reroll# 换盒限流: 3 次/日
 npm i && npm run demo:db# 连真实 PostGIS（ST_DWithin 候选, 与 SQL 端结果一致）
 ```
+
+### 3) App + 后端（④ · MVP 核心闭环）
+
+```bash
+# 后端（默认内存 POI 池; WALKBOX_DB=1 连 PostGIS）
+cd server && npm start            # :8081（0.0.0.0）, 图鉴持久化到 server/data/records.json
+npm run e2e                       # 服务端 e2e（鉴权/限流/校验/图鉴/reroll 全路径）
+
+# App（Flutter Android）
+cd ../app
+flutter test                      # 14 项 Dart 单测（geo/motion/fence 与 TS 原型同基线）
+flutter build apk --debug         # 产物: build/app/outputs/flutter-apk/app-debug.apk
+adb install build/app/outputs/flutter-apk/app-debug.apk
+adb reverse tcp:8081 tcp:8081     # 真机经 USB 访问本机后端（App 内服务器地址保持 127.0.0.1:8081）
+```
+
+真机走测：开盒 → 按箭头步行 → 30m 围栏 + 置信度≥0.8 触发揭晓 → 图鉴；换盒 3 次/日、开盒 10 次/时、乘车拦截（>30km/h）、罗盘不稳降级为"X 点钟方向"、弱信号提示、杀进程恢复全部内置。
+
+CN 网络对策（已配置在仓库内）：gradle wrapper 走腾讯镜像（`android/gradle/wrapper/`），Maven 走阿里云镜像（`android/settings.gradle.kts` + `build.gradle.kts`），pub 走 flutter-io.cn（命令行环境变量）。
 
 ## 原型模块 ↔ TRD 需求对照
 

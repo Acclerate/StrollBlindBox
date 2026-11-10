@@ -1,0 +1,28 @@
+name: walkbox
+description: 散步盲盒 WalkBox — 开盒 · 箭头导航 · 抵达揭晓 · 图鉴
+publish_to: none
+version: 0.1.0+1
+
+environment:
+  sdk: ">=3.5.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  geolocator: ^13.0.4          # 定位（前台流式, NAV-01/02 数据源）
+  flutter_compass: ^0.8.0      # 磁罗盘航向（NAV-01/03）
+  pedometer: ^4.0.2            # 计步（NAV-06; 无权限时自动降级为无步数）
+  permission_handler: ^11.3.1  # 活动识别(Android 计步)运行时权限
+  http: ^1.2.2
+  provider: ^6.1.2
+  shared_preferences: ^2.3.2   # 设备 ID / 服务器地址
+  path_provider: ^2.1.4        # 会话快照目录（NAV-05）
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
